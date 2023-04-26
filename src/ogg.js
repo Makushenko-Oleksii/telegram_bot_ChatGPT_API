@@ -1,15 +1,33 @@
 import axios from "axios";
-import {createWriteStream} from 'fs'
+import {createWriteStream} from 'fs';
+import ffmpeg from 'fluent-ffmpeg';
+import installer from '@ffmpeg-installer/ffmpeg'
 import {dirname, resolve} from 'path';
-import {fileURLToPath} from 'url'
+import {fileURLToPath} from 'url';
+
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 class OggConvertor {
   constructor() {
+    ffmpeg.setFfmpegPath(installer.path)
   }
 
-  toMp3() {
+  toMp3(input, output) {
+    try{
+      // получаю путь к папке
+      const outputPath = resolve(dirname(input), `${output}.mp3`);
+      return new Promise((resolve, reject) => {
+          ffmpeg(input)
+            .inputOptions('-t 30')
+            .output(outputPath)
+            .on('end', () => resolve(outputPath))
+            .on('error', () => reject(error.message))
+            .run()
+      })
+    }catch (error) {
+      console.log('Error while creating mp3', error.message)
+    }
   }
 
   async create(url, filename) {
@@ -20,9 +38,12 @@ class OggConvertor {
         url,
         responseType: 'stream'
       })
-      const stream = createWriteStream(oggPath);
-      response.data.pipe(stream);
-      stream.on('finish', () => {})
+      return new Promise(resolve => {
+        const stream = createWriteStream(oggPath);
+        response.data.pipe(stream);
+        stream.on('finish', () => resolve(oggPath))
+      })
+
     } catch (error) {
       console.log('Error while creating ogg', error.message)
     }
