@@ -1,0 +1,8 @@
+Какие пакеты устанавливал:
+
+- npm i -D nodemon - утилита для автоматического перезапуска приложения Node.js (https://www.digitalocean.com/community/tutorials/workflow-nodemon-ru)
+- cross-env - скрипт для решения проблем с совместимостью
+- telegraf - это библиотека, упрощающая разработку собственных ботов Telegram с использованием JavaScript или TypeScript.. (https://www.npmjs.com/package/telegraf)
+- config - определить и расширить набор параметров по умолчанию для различных сред (разработка, контроль качества, подготовка)
+
+
