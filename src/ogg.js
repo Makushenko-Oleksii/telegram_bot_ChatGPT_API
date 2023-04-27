@@ -1,9 +1,10 @@
 import axios from "axios";
-import {createWriteStream} from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
-import installer from '@ffmpeg-installer/ffmpeg'
+import installer from '@ffmpeg-installer/ffmpeg';
+import {createWriteStream} from 'fs';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
+import {removeFile} from "./utils.js";
 
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -21,8 +22,11 @@ class OggConvertor {
           ffmpeg(input)
             .inputOptions('-t 30')
             .output(outputPath)
-            .on('end', () => resolve(outputPath))
-            .on('error', () => reject(error.message))
+            .on('end', () => {
+              removeFile(input)
+              resolve(outputPath)
+            })
+            .on('error', () => reject(err.message))
             .run()
       })
     }catch (error) {
